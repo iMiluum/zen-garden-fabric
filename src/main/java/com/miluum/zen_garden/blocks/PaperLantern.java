@@ -1,9 +1,6 @@
 package com.miluum.zen_garden.blocks;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
+import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.BooleanProperty;
@@ -16,7 +13,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-public class PaperLantern extends Block {
+public class PaperLantern extends FallingBlock {
     public PaperLantern(Settings settings) {
         super(settings);
         setDefaultState(getStateManager().getDefaultState().with(IS_LIT, false));

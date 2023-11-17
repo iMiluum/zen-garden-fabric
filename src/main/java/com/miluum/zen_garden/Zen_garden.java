@@ -9,7 +9,9 @@ import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.enums.Instrument;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -21,12 +23,18 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import static com.miluum.zen_garden.blocks.PaperLantern.IS_LIT;
 
 public class Zen_garden implements ModInitializer {
 	public static final String MOD_ID = "zen_garden";
 	public static final String MOD_NAME = "Zen Garden";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+	private static final Collection<ItemStack> allItems = new ArrayList<>();
 
 	public static final AbstractBlock.Settings PAPER_LANTERN_SETTINGS = AbstractBlock.Settings.create()
 			.emissiveLighting((state, world, pos) -> true)
@@ -39,9 +47,13 @@ public class Zen_garden implements ModInitializer {
 	public static final Block PAPER_LANTERN = new PaperLantern(PAPER_LANTERN_SETTINGS);
 	public static final Item PAPER_LANTERN_ITEM =  new PaperLanternItem(PAPER_LANTERN, new FabricItemSettings());
 
+	public static final Block FINE_STONE = new Block(AbstractBlock.Settings.copy(Blocks.GRAVEL));
+	public static final Item FINE_STONE_ITEM = new BlockItem(FINE_STONE, new FabricItemSettings());
+
 	private static void registerBlockItem(String id, Block block, Item item) {
 		Registry.register(Registries.BLOCK, id, block);
 		Registry.register(Registries.ITEM, id, item);
+		allItems.add(new ItemStack(item));
 	}
 
 	private static void registerItem(String id, Item item) {
@@ -52,7 +64,7 @@ public class Zen_garden implements ModInitializer {
 			.icon(() -> new ItemStack(PAPER_LANTERN_ITEM))
 			.displayName(Text.translatable("itemGroup.zen_garden.main"))
 			.entries((context, entries) -> {
-				entries.add(PAPER_LANTERN_ITEM);
+				entries.addAll(allItems);
 			})
 			.build();
 
@@ -63,5 +75,6 @@ public class Zen_garden implements ModInitializer {
 		Registry.register(Registries.ITEM_GROUP, new Identifier("zen_garden", "main"), ITEM_GROUP);
 
 		registerBlockItem("zen_garden:paper_lantern", PAPER_LANTERN, PAPER_LANTERN_ITEM);
+		registerBlockItem("zen_garden:fine_stone_block", FINE_STONE, FINE_STONE_ITEM);
 	}
 }
