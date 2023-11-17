@@ -1,5 +1,6 @@
 {
   "variants": {
-    "": { "model": "zen_garden:block/paper_lantern" }
+    "is_lit=false": { "model": "zen_garden:block/paper_lantern" },
+    "is_lit=true": { "model": "zen_garden:block/paper_lantern_on" }
   }
 }
