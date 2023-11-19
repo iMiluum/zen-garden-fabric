@@ -6,7 +6,11 @@ import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.fabric.impl.resource.loader.ResourceManagerHelperImpl;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -25,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import static com.miluum.zen_garden.blocks.PaperLantern.IS_LIT;
 
@@ -37,14 +40,14 @@ public class Zen_garden implements ModInitializer {
 	private static final Collection<ItemStack> allItems = new ArrayList<>();
 
 	public static final AbstractBlock.Settings PAPER_LANTERN_SETTINGS = AbstractBlock.Settings.create()
-			.emissiveLighting((state, world, pos) -> true)
+			.emissiveLighting((state, world, pos) -> state.get(IS_LIT))
 			.burnable()
-			.luminance((state)-> state.get(IS_LIT) ? 15 : 1)
+			.luminance((state)-> state.get(IS_LIT) ? 15 : 0)
 			.instrument(Instrument.FLUTE)
 			.sounds(BlockSoundGroup.SCAFFOLDING)
 			.hardness(0.1f);
 
-	public static final Block PAPER_LANTERN = new PaperLantern(PAPER_LANTERN_SETTINGS);
+	public static final Block PAPER_LANTERN = new PaperLantern(PAPER_LANTERN_SETTINGS, LOGGER);
 	public static final Item PAPER_LANTERN_ITEM =  new PaperLanternItem(PAPER_LANTERN, new FabricItemSettings());
 
 	public static final Block FINE_STONE = new Block(AbstractBlock.Settings.copy(Blocks.GRAVEL));
@@ -68,6 +71,14 @@ public class Zen_garden implements ModInitializer {
 			})
 			.build();
 
+
+
+	public static void registerBuiltinPack(String namespace, String path) {
+		ModContainer mod = FabricLoader.getInstance().getModContainer("zen_garden").orElseThrow();
+		ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(namespace, path), mod, ResourcePackActivationType.NORMAL);
+	}
+
+
 	@Override
 	public void onInitialize() {
 		LOGGER.info("Initializing Zen Garden!");
@@ -76,5 +87,7 @@ public class Zen_garden implements ModInitializer {
 
 		registerBlockItem("zen_garden:paper_lantern", PAPER_LANTERN, PAPER_LANTERN_ITEM);
 		registerBlockItem("zen_garden:fine_stone_block", FINE_STONE, FINE_STONE_ITEM);
+
+		registerBuiltinPack("zen_garden", "pixel_garden");
 	}
 }
